@@ -1,5 +1,6 @@
 pcb/*.s#*
 pcb/*.b#*
 .ccls-cache/
+.vscode/
 build/
 dist/
