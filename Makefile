@@ -2,6 +2,7 @@ TARGET = dist/pixel_eyes
 
 F_CPU = 16000000UL
 DEVICE = atmega32u4
+PROGRAMMER = avrisp2
 
 CC = avr-gcc
 OBJCOPY = avr-objcopy
@@ -21,7 +22,8 @@ HEADER_FILES := $(shell find src/ -name *.h)
 
 all: $(TARGET).hex
 
-test: $(AVRDUDE) -v
+test:
+	$(AVRDUDE) -v
 
 build/%.o: src/%.c
 	@mkdir -p $(dir $@)
