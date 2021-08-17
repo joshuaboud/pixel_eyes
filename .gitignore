@@ -1,3 +1,5 @@
 pcb/*.s#*
 pcb/*.b#*
 .ccls-cache/
+build/
+dist/
