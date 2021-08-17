@@ -10,7 +10,7 @@ OBJDUMP = avr-objdump
 AVRDUDE = avrdude -c $(PROGRAMMER) -p $(DEVICE)
 SIZE = avr-size --format=avr --mcu=$(DEVICE)
 
-CFLAGS = -g2 -I/usr/avr/include -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) -std=c11
+CFLAGS = -g2 -I/usr/avr/include -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) -std=gnu11
 CFLAGS += -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS += -Wall -Wno-pointer-to-int-cast
 
