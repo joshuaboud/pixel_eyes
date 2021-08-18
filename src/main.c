@@ -1,61 +1,90 @@
 #include "Light_WS2812/ws2812_config.h"
 #include "Light_WS2812/light_ws2812.h"
 #include "defines.h"
+#include "frame.h"
 #include "frames.h"
 
-volatile uint8_t emote;
-volatile uint8_t frame;
+#include <stddef.h>
 
-volatile struct cRGB buffer[NUM_LEDS];
-
-typedef struct {
-    uint8_t display : 2;
-    uint8_t time_scale : 2;
-    uint8_t scale_first_frame_only : 1;
-
-} EmoteInfoBitfield;
-
-const EmoteInfoBitfield emote_info[Emotes_length] = {
-    {.display = COPY, .time_scale = 3, .scale_first_frame_only = 1}, // BLINK
-    {.display = SINGLE_EYE, .time_scale = 2, .scale_first_frame_only = 0}, // WINK
-    {.display = COPY, .time_scale = 0, .scale_first_frame_only = 0}, // HAPPY
-    {.display = MIRROR, .time_scale = 0, .scale_first_frame_only = 0}, // ANGRY
-    {.display = MIRROR, .time_scale = 2, .scale_first_frame_only = 0}, // SAD
-    {.display = MIRROR, .time_scale = 2, .scale_first_frame_only = 0}, // LOVE
-    {.display = MIRROR, .time_scale = 0, .scale_first_frame_only = 0}, // RAINBOW
-    {.display = COPY, .time_scale = 2, .scale_first_frame_only = 0}, // EYEROLL
-    {.display = COPY, .time_scale = 1, .scale_first_frame_only = 0}, // CASH
-};
-
-void setup() {
-    emote = BLINK;
-    frame = 0;
+void setup(void) {
+    // set up ports
 }
 
-void display_frame() {
-    uint8_t inc = 1;
-    uint8_t in_off = 0;
-    uint8_t out_off = 0;
-    EmoteInfoBitfield info = emote_info[emote];
-    frame %= FRAME_COUNT;
+void draw_frame(const Frame *fptr, const Frame *next_emote, struct cRGB *const buff_ptr) {
+    const uint8_t left_inc = 1;
+    uint8_t right_inc = 1;
+    struct cRGB *left_out;
+    struct cRGB *right_out;
+    static uint8_t duration_counter = 0;
 
-    // not done
-    const struct  cRGB *in = &frames[frame];
-    volatile struct cRGB *out = &buffer[0];
-    out[out_off] = in[in_off % LED_COLS];
-    out_off++;
-    in_off += inc;
+    if (duration_counter == 0) { // draw frame once
+        // set up pointers
+        left_out = buff_ptr;
+        enum FrameType type = fptr->info.type;
+        switch (type) {
+            case COPY:
+                right_out = left_out + FRAME_W - 1;
+                break;
+            case MIRROR:
+                right_out = left_out + FRAME_W * 2 - 1;
+                right_inc = -1;
+                break;
+            case LEFT:
+                right_out = NULL;
+                break;
+            case RIGHT:
+                right_out = left_out + FRAME_W - 1;
+                left_out = NULL;
+                break;
+        }
 
-    frame++;
+        // draw to buffer
+        for (uint8_t i = 0; i < FRAME_H; i++) {
+            for (uint8_t j = 0; j < FRAME_W; j++) {
+                struct cRGB pixel = RGB6_2_cRGB(fptr->pixels[i][j]);
+                if (left_out) *left_out = pixel;
+                if (right_out) *right_out = pixel;
+                left_out += left_inc;
+                right_out += right_inc;
+            }
+            // reset pointers for next line
+            switch (type) {
+                case COPY:
+                    left_out += FRAME_W; // skip current right
+                    right_out += FRAME_W; // skip next left
+                    break;
+                case MIRROR:
+                    left_out += FRAME_W;
+                    right_out += FRAME_W * 2 - 1;
+                    break;
+                case LEFT:
+                    left_out += FRAME_W; // skip current right
+                    break;
+                case RIGHT:
+                    right_out += FRAME_W; // skip next left
+                    break;
+            }
+        }
+    }
+    if ((duration_counter = (duration_counter + 1) % fptr->info.duration) == 0) {
+        if (fptr->info.last_frame) {
+            fptr = next_emote;
+        } else {
+            fptr++;
+        }
+    }
 }
 
-void check_input() {
+void display_frame(struct cRGB *buff) {
+    ws2812_setleds(buff, BUFF_SZ);
+}
+
+void check_input(const Frame *next_frame) {
     for (uint8_t scan = 0; scan < INPUT_MATRIX_ROWS; scan++) {
         PORTB = ~(1 << scan); // pull down row
         for (uint8_t test = 0; test < INPUT_MATRIX_COLS; test++) {
             if ((PINC & (1 << test)) == 0) { // if tested pin is low, must be pressed
-                emote = (test + 1) * (scan + 1);
-                frame = 0;
+                next_frame = &frames[(scan + 1) * (test + 1)];
                 return;
             }
         }
@@ -63,14 +92,23 @@ void check_input() {
 }
 
 void state_machine() {
+    const Frame *fptr = NULL;
+    const Frame *next_emote = NULL;
+    struct cRGB buffer[BUFF_SZ];
+
+    // set fptr to first frame of default emote
+    fptr = &frames[0];
+    next_emote = fptr;
+
     while(1) {
-        display_frame();
-        check_input();
+        draw_frame(fptr, next_emote, buffer);
+        display_frame(buffer);
+        check_input(next_emote);
     }
 }
 
 int main(void) {
-    struct cRGB buffer[NUM_LEDS];
     setup();
+    state_machine();
     return 0;
 }
