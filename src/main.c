@@ -1,5 +1,10 @@
+#ifdef SIMULATE
+
+#else
 #include "Light_WS2812/ws2812_config.h"
 #include "Light_WS2812/light_ws2812.h"
+#include <avr/io.h>
+#endif
 #include "defines.h"
 #include "frame.h"
 #include "frames.h"
@@ -17,7 +22,7 @@ void draw_frame(const Frame *fptr, const Frame *next_emote, struct cRGB *const b
     struct cRGB *right_out;
     static uint8_t duration_counter = 0;
 
-    if (duration_counter == 0) { // draw frame once
+    if (duration_counter == 0) { // draw frame once per duration
         // set up pointers
         left_out = buff_ptr;
         enum FrameType type = fptr->info.type;
@@ -66,8 +71,11 @@ void draw_frame(const Frame *fptr, const Frame *next_emote, struct cRGB *const b
             }
         }
     }
+
+    // check if ready for next frame
     if ((duration_counter = (duration_counter + 1) % fptr->info.duration) == 0) {
         if (fptr->info.last_frame) {
+            // if last frame of emote, move to next or loop back depending if changed
             fptr = next_emote;
         } else {
             fptr++;
@@ -84,7 +92,7 @@ void check_input(const Frame *next_frame) {
         PORTB = ~(1 << scan); // pull down row
         for (uint8_t test = 0; test < INPUT_MATRIX_COLS; test++) {
             if ((PINC & (1 << test)) == 0) { // if tested pin is low, must be pressed
-                next_frame = &frames[(scan + 1) * (test + 1)];
+                next_frame = frame_lut[(scan + 1) * (test + 1)];
                 return;
             }
         }

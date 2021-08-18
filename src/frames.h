@@ -28,3 +28,15 @@ const Frame frames[] = {
         }
     },
 };
+
+const Frame *frame_lut[] = {
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+    &frames[0],
+};
