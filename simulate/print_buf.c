@@ -1,8 +1,9 @@
 #include "print_buf.h"
 #include "../src/defines.h"
+#include "input.h"
 
 #include <stdio.h>
-#include <time.h>
+#include <unistd.h>
 
 void ws2812_setleds (struct cRGB  *ledarray, uint16_t number_of_leds) {
     printf("\e[1;1H\e[2J");
@@ -21,5 +22,6 @@ void ws2812_setleds (struct cRGB  *ledarray, uint16_t number_of_leds) {
         putchar('\n');
     }
     putchar ('\n');
+    printf("keypress: 0x%x\n", keypress);
     usleep(66666);
 }

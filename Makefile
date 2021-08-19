@@ -62,6 +62,6 @@ set_sim_vars:
 
 $(SIM_TARGET): $(SIM_OBJECT_FILES)
 	@mkdir -p dist
-	$(CC) $(SIM_OBJECT_FILES) -Wall $(LIBS) -o $@
+	$(CC) $(SIM_OBJECT_FILES) -Wall $(LIBS) -lpthread -o $@
 
 

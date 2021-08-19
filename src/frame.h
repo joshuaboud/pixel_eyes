@@ -2,6 +2,8 @@
 
 #ifdef SIMULATE
 #include <stdint.h>
+#else
+#include <avr/io.h>
 #endif
 
 #define FRAME_W 5

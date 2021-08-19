@@ -1,6 +1,7 @@
 #ifdef SIMULATE
 #include "../simulate/print_buf.h"
 #include "../simulate/input.h"
+#include <stdio.h>
 #else
 #include "Light_WS2812/ws2812_config.h"
 #include "Light_WS2812/light_ws2812.h"
@@ -82,16 +83,20 @@ void display_frame(struct cRGB *buff) {
     ws2812_setleds(buff, BUFF_SZ);
 }
 
-void check_input(const Frame *next_frame) {
+void check_input(const Frame **next_frame) {
+#ifdef SIMULATE
+    simulate_input(next_frame);
+#else
     for (uint8_t scan = 0; scan < INPUT_MATRIX_ROWS; scan++) {
         SCAN_PORT = ~(1 << scan); // pull down row
         for (uint8_t test = 0; test < INPUT_MATRIX_COLS; test++) {
             if ((INPUT_PORT & (1 << test)) == 0) { // if tested pin is low, must be pressed
-                next_frame = frame_lut[(scan + 1) * (test + 1)];
+                *next_frame = frame_lut[(scan + 1) * (test + 1)];
                 return;
             }
         }
     }
+#endif
 }
 
 void state_machine() {
@@ -104,14 +109,17 @@ void state_machine() {
     fptr = &frames[0];
     next_emote = fptr;
 
-    while(1) {
+    while (1) {
         draw_frame(&fptr, next_emote, buffer);
         display_frame(buffer);
-        check_input(next_emote);
+        check_input(&next_emote);
     }
 }
 
 int main(void) {
+#ifdef SIMULATE
+    setup_input();
+#endif
     setup();
     state_machine();
     return 0;
