@@ -119,19 +119,31 @@ def save(emotes):
     f = open(sys.argv[1], "w")
     emote_ind = 0
     emote_inds = []
+    f.write("#include \"frames.h\"\n\n")
+    f.write("const Frame frames[] = {\n")
     for emote in emotes:
         emote_inds.append(emote_ind)
-        f.write("{\n")
         for frame in emote:
+            last_frame = frame["info"]["last_frame"]
+            frame_type = FRAME_TYPES[frame["info"]["type"]]
+            duration = frame["info"]["duration"]
             f.write("\t{\n")
+            f.write("\t\t.info = {{.last_frame = {}, .type = {}, .duration = {}}},\n".format(last_frame, frame_type, duration))
+            f.write("\t\t.pixels = {\n")
             for row in frame["pixels"]:
                 f.write("\t\t\t{")
                 for col in row:
                     f.write('{{0b{0:06b}}}, '.format(col[0] >> 2 | col[1] >> 4 | col[2] >> 6))
                 f.write("},\n")
+            f.write("\t\t},\n")
             emote_ind += 1
             f.write("\t},\n")
-        f.write("},\n")
+    f.write("};\n")
+    f.write("\n")
+    f.write("const Frame *frame_lut[] = {\n")
+    for ind in emote_inds:
+        f.write(f"\t&frames[{ind}],\n")
+    f.write("};\n")
     f.close()
 
 def setup():
