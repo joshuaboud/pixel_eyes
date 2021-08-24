@@ -249,7 +249,11 @@ def loop(screen, text):
                     current_frame = min([current_frame + 1, len(emotes[current_emote]) - 1])
                 elif event.key == K_n:
                     emotes[current_emote][len(emotes[current_emote]) - 1]["info"]["last_frame"] = 0
-                    emotes[current_emote].insert(current_frame + 1, new_frame(emotes[current_emote][current_frame]))
+                    emotes[current_emote][current_emote]["info"]["last_frame"] = 0
+                    if event.unicode == 'N':
+                        emotes[current_emote].append(new_frame(emotes[current_emote][current_frame]))
+                    else:
+                        emotes[current_emote].insert(current_frame + 1, new_frame(emotes[current_emote][current_frame]))
                     emotes[current_emote][len(emotes[current_emote]) - 1]["info"]["last_frame"] = 1
                     current_frame += 1
                 elif event.key == K_d or event.key == K_DELETE:
