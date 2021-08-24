@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import json
 import pygame
 from pygame.locals import (
@@ -9,7 +10,11 @@ from pygame.locals import (
     K_LEFT,
     K_RIGHT,
     K_ESCAPE,
+    K_DELETE,
+    K_d,
     K_n,
+    K_o,
+    K_t,
     KEYDOWN,
     QUIT,
     MOUSEBUTTONUP
@@ -42,7 +47,7 @@ FRAME_TYPES = ["COPY", "MIRROR", "LEFT", "RIGHT"]
 
 current_emote = 0
 current_frame = 0
-current_colour = (0,0,0)
+current_colour = [0,0,0]
 
 def new_frame(copy_frame = None):
     info = {
@@ -55,7 +60,7 @@ def new_frame(copy_frame = None):
         pixels.append([])
         for j in range(FRAME_W_REAL):
             if copy_frame is None:
-                pixels[i].append((0,0,0))
+                pixels[i].append([0,0,0])
             else:
                 pixels[i].append(copy_frame["pixels"][i][j])
     return {"info": info, "pixels": pixels}
@@ -85,7 +90,48 @@ def gen_palette(screen):
 
 def change_colour(screen, pos):
     global current_colour
-    current_colour = screen.get_at(pos)
+    current_colour = [*screen.get_at(pos)]
+
+def print_multiline(message, screen, text, left = None, right = None, top = None, bottom = None):
+    offset = 0
+    textsurfaces = []
+    max_w = 0
+    height_sum = 0
+    for line in message.split('\n'):
+        textsurface = text.render(line, False, (255,255,255))
+        textsurfaces.append(textsurface)
+        w = textsurface.get_width()
+        if w > max_w:
+            max_w = w
+        height_sum += textsurface.get_height()
+    pos = [0,0]
+    if left:
+        pos[0] = left
+    if right:
+        pos[0] = screen.get_width() - right - max_w
+    if top:
+        pos[1] = top
+    if bottom:
+        pos[1] = screen.get_height() - bottom - height_sum
+    for textsurface in textsurfaces:
+        screen.blit(textsurface, (pos[0], pos[1] + offset))
+        offset += textsurface.get_height()
+
+def show_help(screen, text):
+    help_text = """\
+Help:
+* UP/DN: Change Emote
+* L/R: Change Frame
+* 'n' to insert frame
+  after curr pos
+* 't' to cycle frame
+  type
+* 'o' to generate C
+* Click palette to
+  change colour
+* ESC to save & exit\
+"""
+    print_multiline(help_text, screen, text, right=20, bottom=20)
 
 def draw_screen(screen, text, emotes):
     global TYPE_END
@@ -94,7 +140,7 @@ def draw_screen(screen, text, emotes):
     for i in range(len(frame)):
         for j in range(len(frame[i])):
             colour = frame[i][j]
-            screen.fill(colour, pygame.Rect(FRAME_LEFT + j*FRAME_SCALE, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
+            screen.fill((colour[0], colour[1], colour[2]), pygame.Rect(FRAME_LEFT + j*FRAME_SCALE, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
     textsurface = text.render(
         f'Emote: {current_emote + 1}/{len(emotes)} Frame: {current_frame + 1}/{len(emotes[current_emote])}',
         False, (255,255,255)
@@ -107,6 +153,7 @@ def draw_screen(screen, text, emotes):
     TYPE_END = (TYPE_START[0] + textsurface.get_width(), TYPE_START[1] + textsurface.get_height())
     screen.blit(textsurface, TYPE_START)
     gen_palette(screen)
+    show_help(screen, text)
     pygame.display.flip()
 
 def colour_pixel(frame, pos):
@@ -115,49 +162,70 @@ def colour_pixel(frame, pos):
     if x >= 0 and x < FRAME_W_REAL and y >= 0 and y < FRAME_H_REAL:
         frame[y][x] = current_colour
 
+def cycle_frame_type(frame):
+    frame["info"]["type"] = (frame["info"]["type"] + 1) % len(FRAME_TYPES)
+
 def save(emotes):
-    f = open(sys.argv[1], "w")
-    emote_ind = 0
-    emote_inds = []
-    f.write("#include \"frames.h\"\n\n")
-    f.write("const Frame frames[] = {\n")
-    for emote in emotes:
-        emote_inds.append(emote_ind)
-        for frame in emote:
-            last_frame = frame["info"]["last_frame"]
-            frame_type = FRAME_TYPES[frame["info"]["type"]]
-            duration = frame["info"]["duration"]
-            f.write("\t{\n")
-            f.write("\t\t.info = {{.last_frame = {}, .type = {}, .duration = {}}},\n".format(last_frame, frame_type, duration))
-            f.write("\t\t.pixels = {\n")
-            for row in frame["pixels"]:
-                f.write("\t\t\t{")
-                for col in row:
-                    f.write('{{0b{0:06b}}}, '.format(col[0] >> 2 | col[1] >> 4 | col[2] >> 6))
-                f.write("},\n")
-            f.write("\t\t},\n")
-            emote_ind += 1
-            f.write("\t},\n")
-    f.write("};\n")
-    f.write("\n")
-    f.write("const Frame *frame_lut[] = {\n")
-    for ind in emote_inds:
-        f.write(f"\t&frames[{ind}],\n")
-    f.write("};\n")
-    f.close()
+    save_path = os.path.dirname(sys.argv[0]) + "/save.json"
+    with open(save_path, "w") as f:
+        json.dump(emotes, f)
+        f.close()
+
+def load():
+    emotes = None
+    save_path = os.path.dirname(sys.argv[0]) + "/save.json"
+    if os.path.isfile(save_path):
+        with open(save_path, "r") as f:
+            emotes = json.load(f)
+            f.close()
+    return emotes
+
+def generate(emotes):
+    out_path = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(sys.argv[0]) + "/frames.c"
+    with open(out_path, "w") as f:
+        emote_ind = 0
+        emote_inds = []
+        f.write("#include \"frames.h\"\n\n")
+        f.write("const Frame frames[] = {\n")
+        for emote in emotes:
+            emote_inds.append(emote_ind)
+            for frame in emote:
+                last_frame = frame["info"]["last_frame"]
+                frame_type = FRAME_TYPES[frame["info"]["type"]]
+                duration = frame["info"]["duration"]
+                f.write("\t{\n")
+                f.write("\t\t.info = {{.last_frame = {}, .type = {}, .duration = {}}},\n".format(last_frame, frame_type, duration))
+                f.write("\t\t.pixels = {\n")
+                for row in frame["pixels"]:
+                    f.write("\t\t\t{")
+                    for col in row:
+                        f.write('{{0b{0:06b}}}, '.format(col[0] >> 2 | col[1] >> 4 | col[2] >> 6))
+                    f.write("},\n")
+                f.write("\t\t},\n")
+                emote_ind += 1
+                f.write("\t},\n")
+        f.write("};\n")
+        f.write("\n")
+        f.write("const Frame *frame_lut[] = {\n")
+        for ind in emote_inds:
+            f.write(f"\t&frames[{ind}],\n")
+        f.write("};\n")
+        f.close()
 
 def setup():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_W, SCREEN_H])
     pygame.font.init()
-    text = pygame.font.SysFont('monospace', 12)
+    text = pygame.font.SysFont('monospace', 16)
     return (screen, text)
 
 def loop(screen, text):
     global current_emote
     global current_frame
     running = True
-    emotes = [[new_frame()] for i in range(9)]
+    emotes = load()
+    if not emotes:
+        emotes = [[new_frame()] for i in range(9)]
     once = True
     while running:
         for event in pygame.event.get():
@@ -178,8 +246,21 @@ def loop(screen, text):
                     current_frame = min([current_frame + 1, len(emotes[current_emote]) - 1])
                 elif event.key == K_n:
                     emotes[current_emote][len(emotes[current_emote]) - 1]["info"]["last_frame"] = 0
-                    emotes[current_emote].append(new_frame(emotes[current_emote][current_frame]))
+                    emotes[current_emote].insert(current_frame + 1, new_frame(emotes[current_emote][current_frame]))
                     emotes[current_emote][len(emotes[current_emote]) - 1]["info"]["last_frame"] = 1
+                    current_frame += 1
+                elif event.key == K_d or event.key == K_DELETE:
+                    if len(emotes[current_emote]) == 1:
+                        emotes[current_emote][current_frame] = new_frame()
+                    else:
+                        del emotes[current_emote][current_frame]
+                        if current_frame >= len(emotes[current_emote]):
+                            current_frame -= 1
+                            emotes[current_emote][current_frame]["info"]["last_frame"] = 1
+                elif event.key == K_o:
+                    generate(emotes)
+                elif event.key == K_t:
+                    cycle_frame_type(emotes[current_emote][current_frame])
         pos = pygame.mouse.get_pos()
         pressed1, pressed2, pressed3 = pygame.mouse.get_pressed()
         if pressed1:
@@ -188,7 +269,7 @@ def loop(screen, text):
             elif clicked_palette(pos):
                 change_colour(screen, pos)
             elif clicked_type(pos) and once:
-                emotes[current_emote][current_frame]["info"]["type"] = (emotes[current_emote][current_frame]["info"]["type"] + 1) % len(FRAME_TYPES)
+                cycle_frame_type(emotes[current_emote][current_frame])
             once = False
         else:
             once = True
