@@ -15,6 +15,7 @@ from pygame.locals import (
     K_n,
     K_o,
     K_t,
+    K_MINUS,
     KEYDOWN,
     QUIT,
     MOUSEBUTTONUP
@@ -122,6 +123,8 @@ def show_help(screen, text):
 Help:
 * UP/DN: Change Emote
 * L/R: Change Frame
+* +/-: inc/dec frame
+  duration
 * 'n' to insert frame
   after curr pos
 * 't' to cycle frame
@@ -131,7 +134,7 @@ Help:
   change colour
 * ESC to save & exit\
 """
-    print_multiline(help_text, screen, text, right=20, bottom=20)
+    print_multiline(help_text, screen, text, right=20, top=20)
 
 def draw_screen(screen, text, emotes):
     global TYPE_END
@@ -142,7 +145,7 @@ def draw_screen(screen, text, emotes):
             colour = frame[i][j]
             screen.fill((colour[0], colour[1], colour[2]), pygame.Rect(FRAME_LEFT + j*FRAME_SCALE, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
     textsurface = text.render(
-        f'Emote: {current_emote + 1}/{len(emotes)} Frame: {current_frame + 1}/{len(emotes[current_emote])}',
+        f'Emote: {current_emote + 1}/{len(emotes)} Frame: {current_frame + 1}/{len(emotes[current_emote])} (Frame Duration: {emotes[current_emote][current_frame]["info"]["duration"]})',
         False, (255,255,255)
     )
     screen.blit(textsurface, (20, SCREEN_H - 20))
@@ -261,6 +264,14 @@ def loop(screen, text):
                     generate(emotes)
                 elif event.key == K_t:
                     cycle_frame_type(emotes[current_emote][current_frame])
+                elif event.unicode == '+':
+                    dur = emotes[current_emote][current_frame]["info"]["duration"]
+                    dur = min(dur + 1, 31)
+                    emotes[current_emote][current_frame]["info"]["duration"] = dur
+                elif event.key == K_MINUS:
+                    dur = emotes[current_emote][current_frame]["info"]["duration"]
+                    dur = max(dur - 1, 1)
+                    emotes[current_emote][current_frame]["info"]["duration"] = dur
         pos = pygame.mouse.get_pos()
         pressed1, pressed2, pressed3 = pygame.mouse.get_pressed()
         if pressed1:
