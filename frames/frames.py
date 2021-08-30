@@ -3,6 +3,7 @@
 import sys
 import os
 import json
+import time
 import pygame
 from pygame.locals import (
     K_UP,
@@ -16,6 +17,7 @@ from pygame.locals import (
     K_o,
     K_t,
     K_MINUS,
+    K_SPACE,
     KEYDOWN,
     QUIT,
     MOUSEBUTTONUP
@@ -31,6 +33,8 @@ FRAME_H_REAL = 6
 FRAME_SCALE = 50
 FRAME_W = FRAME_W_REAL * FRAME_SCALE
 FRAME_H = FRAME_H_REAL * FRAME_SCALE
+
+FRAME_PERIOD = 1.0 / 15
 
 PALETTE_ROWS = 16
 NUM_COLOUR = pow(4, 3)
@@ -222,6 +226,37 @@ def setup():
     text = pygame.font.SysFont('monospace', 16)
     return (screen, text)
 
+def preview_frame(screen, frame):
+    frame_type = frame["info"]["type"]
+    pixels = frame["pixels"]
+    screen.fill(BG)
+    second_frame_left = FRAME_LEFT + FRAME_W + 20
+    itr_mult = 1
+    if FRAME_TYPES[frame_type] == "MIRROR":
+        second_frame_left += FRAME_W - FRAME_SCALE
+        itr_mult = -1
+    for i in range(len(pixels)):
+        for j in range(len(pixels[i])):
+            colour = pixels[i][j]
+            screen.fill((colour[0], colour[1], colour[2]), pygame.Rect(FRAME_LEFT + j*FRAME_SCALE, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
+            screen.fill((colour[0], colour[1], colour[2]), pygame.Rect(second_frame_left + j*FRAME_SCALE*itr_mult, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
+    pygame.display.flip()
+
+def preview(screen, emote):
+    frame_ind = 0
+    previewing = True
+    while previewing:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                return
+        frame = emote[frame_ind]
+        preview_frame(screen, frame)
+        if frame["info"]["last_frame"]:
+            frame_ind = 0
+        else:
+            frame_ind += 1
+        time.sleep(FRAME_PERIOD * frame["info"]["duration"])
+
 def loop(screen, text):
     global current_emote
     global current_frame
@@ -276,6 +311,8 @@ def loop(screen, text):
                     dur = emotes[current_emote][current_frame]["info"]["duration"]
                     dur = max(dur - 1, 1)
                     emotes[current_emote][current_frame]["info"]["duration"] = dur
+                elif event.key == K_SPACE:
+                    preview(screen, emotes[current_emote])
         pos = pygame.mouse.get_pos()
         pressed1, pressed2, pressed3 = pygame.mouse.get_pressed()
         if pressed1:
