@@ -1,5 +1,6 @@
 pcb/*.s#*
 pcb/*.b#*
+*.~lock.*#
 .ccls-cache/
 .vscode/
 build/
