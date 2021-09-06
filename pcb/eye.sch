@@ -10473,7 +10473,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <part name="32U4" library="SparkFun-IC-Microcontroller" deviceset="ATMEGA32U4" device="QFN" value="32U4"/>
 <part name="P+37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="JP1" library="josh" deviceset="JST-ZH-5" device="SMD-RA" value="JST-ZH-5SMD-RA"/>
+<part name="J2" library="josh" deviceset="JST-ZH-5" device="SMD-RA" value="JST-ZH-5SMD-RA"/>
 <part name="U$4" library="josh" deviceset="GLASSES_HINGE" device=""/>
 <part name="U$5" library="josh" deviceset="GLASSES_HINGE" device=""/>
 <part name="GND80" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -12356,7 +12356,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <instance part="GND37" gate="1" x="104.14" y="73.66" smashed="yes">
 <attribute name="VALUE" x="101.6" y="71.12" size="1.778" layer="96"/>
 </instance>
-<instance part="JP1" gate="G$1" x="114.3" y="81.28" smashed="yes">
+<instance part="J2" gate="G$1" x="114.3" y="81.28" smashed="yes">
 <attribute name="NAME" x="107.95" y="89.535" size="1.778" layer="95"/>
 <attribute name="VALUE" x="107.95" y="71.12" size="1.778" layer="96"/>
 </instance>
@@ -12416,7 +12416,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <segment>
 <pinref part="P+37" gate="1" pin="+5V"/>
 <wire x1="104.14" y1="86.36" x2="111.76" y2="86.36" width="0.1524" layer="91"/>
-<pinref part="JP1" gate="G$1" pin="1"/>
+<pinref part="J2" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="C17" gate="G$1" pin="1"/>
@@ -12466,7 +12466,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <segment>
 <pinref part="GND37" gate="1" pin="GND"/>
 <wire x1="104.14" y1="76.2" x2="111.76" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="JP1" gate="G$1" pin="5"/>
+<pinref part="J2" gate="G$1" pin="5"/>
 </segment>
 <segment>
 <pinref part="C17" gate="G$1" pin="2"/>
@@ -12560,7 +12560,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <segment>
 <pinref part="32U4" gate="U1" pin="PF0(ADC0)"/>
 <wire x1="91.44" y1="73.66" x2="99.06" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="JP1" gate="G$1" pin="4"/>
+<pinref part="J2" gate="G$1" pin="4"/>
 <wire x1="99.06" y1="73.66" x2="99.06" y2="78.74" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="78.74" x2="111.76" y2="78.74" width="0.1524" layer="91"/>
 </segment>
@@ -12570,7 +12570,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <pinref part="32U4" gate="U1" pin="PF1(ADC1)"/>
 <wire x1="91.44" y1="76.2" x2="96.52" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="76.2" x2="96.52" y2="81.28" width="0.1524" layer="91"/>
-<pinref part="JP1" gate="G$1" pin="3"/>
+<pinref part="J2" gate="G$1" pin="3"/>
 <wire x1="96.52" y1="81.28" x2="111.76" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -12578,7 +12578,7 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <segment>
 <pinref part="32U4" gate="U1" pin="PF4(ADC4)"/>
 <wire x1="91.44" y1="78.74" x2="93.98" y2="78.74" width="0.1524" layer="91"/>
-<pinref part="JP1" gate="G$1" pin="2"/>
+<pinref part="J2" gate="G$1" pin="2"/>
 <wire x1="93.98" y1="78.74" x2="93.98" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="93.98" y1="83.82" x2="111.76" y2="83.82" width="0.1524" layer="91"/>
 </segment>
