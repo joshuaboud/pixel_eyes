@@ -10134,6 +10134,23 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <wire x1="-4.5" y1="0" x2="-4.5" y2="-1.5" width="0.127" layer="21"/>
 <wire x1="4.5" y1="0" x2="4.5" y2="-1.5" width="0.127" layer="21"/>
 </package>
+<package name="GLASSES_HINGE">
+<pad name="P$1" x="0" y="6" drill="1" shape="octagon"/>
+<pad name="P$2" x="0" y="-6" drill="1" shape="octagon"/>
+</package>
+<package name="JST-ZH-5-SMD-RA">
+<smd name="P$1" x="3" y="-1.5" dx="0.72" dy="3" layer="1"/>
+<smd name="P$2" x="1.5" y="-1.5" dx="0.72" dy="3" layer="1"/>
+<smd name="P$3" x="0" y="-1.5" dx="0.72" dy="3" layer="1"/>
+<smd name="P$4" x="-1.5" y="-1.5" dx="0.72" dy="3" layer="1"/>
+<smd name="P$5" x="-3" y="-1.5" dx="0.72" dy="3" layer="1"/>
+<smd name="P$6" x="4.95" y="2.35" dx="1.1" dy="1.9" layer="1"/>
+<smd name="P$7" x="-4.95" y="2.35" dx="1.1" dy="1.9" layer="1"/>
+<wire x1="-4.3" y1="4.3" x2="4.3" y2="4.3" width="0.127" layer="51"/>
+<text x="4.3" y="4.3" size="1.27" layer="51">board edge</text>
+<wire x1="-5.25" y1="0" x2="-5.25" y2="5.25" width="0.127" layer="51"/>
+<wire x1="5.25" y1="0" x2="5.25" y2="5.25" width="0.127" layer="51"/>
+</package>
 </packages>
 <symbols>
 <symbol name="PINHD5">
@@ -10149,6 +10166,10 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <pin name="4" x="-2.54" y="-2.54" visible="pad" length="short" direction="pas" function="dot"/>
 <pin name="5" x="-2.54" y="-5.08" visible="pad" length="short" direction="pas" function="dot"/>
 </symbol>
+<symbol name="GLASSES_HINGE">
+<pin name="P$1" x="0" y="2.54" length="middle" direction="nc"/>
+<pin name="P$2" x="0" y="-2.54" length="middle" direction="nc"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="JST-ZH-5">
@@ -10163,6 +10184,34 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <connect gate="G$1" pin="3" pad="P$3"/>
 <connect gate="G$1" pin="4" pad="P$4"/>
 <connect gate="G$1" pin="5" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="SMD-RA" package="JST-ZH-5-SMD-RA">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$2"/>
+<connect gate="G$1" pin="3" pad="P$3"/>
+<connect gate="G$1" pin="4" pad="P$4"/>
+<connect gate="G$1" pin="5" pad="P$5"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="GLASSES_HINGE">
+<gates>
+<gate name="G$1" symbol="GLASSES_HINGE" x="-2.54" y="0"/>
+</gates>
+<devices>
+<device name="" package="GLASSES_HINGE">
+<connects>
+<connect gate="G$1" pin="P$1" pad="P$1"/>
+<connect gate="G$1" pin="P$2" pad="P$2"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -10277,22 +10326,22 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <part name="GND28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C5" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND35" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C6" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U31" library="SparkFun-LED" deviceset="WS2812" device="&quot;" value="WS2812"/>
@@ -10385,46 +10434,55 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <part name="GND65" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND66" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND67" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+68" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND68" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C8" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+69" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND69" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+70" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND70" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C10" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+71" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND71" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C11" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+72" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND72" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2"/>
+<part name="C12" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
 <part name="P+73" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND73" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="470"/>
+<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="470"/>
 <part name="J1" library="SparkFun-Connectors" deviceset="USB_MICRO-B" device="_FEMALE-SMT"/>
 <part name="P+74" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND74" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1u"/>
+<part name="C13" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="1u"/>
 <part name="GND75" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="1u"/>
+<part name="C14" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="1u"/>
 <part name="GND76" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+75" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="22"/>
-<part name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="22"/>
+<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="22"/>
+<part name="R3" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="22"/>
 <part name="GND77" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0805" package3d_urn="urn:adsk.eagle:package:23553/2" value="1k"/>
+<part name="R4" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1k"/>
 <part name="GND78" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="Q1" library="SparkFun-Clocks" deviceset="CRYSTAL" device="SMD-3.2X1.5" value="ECS-160-20-3X-TR"/>
-<part name="C15" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="20p"/>
-<part name="C16" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="20p"/>
+<part name="C15" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="20p"/>
+<part name="C16" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="20p"/>
 <part name="GND79" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="32U4" library="SparkFun-IC-Microcontroller" deviceset="ATMEGA32U4" device="QFN" value="32U4"/>
 <part name="P+37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="GND37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="JP1" library="josh" deviceset="JST-ZH-5" device=""/>
+<part name="JP1" library="josh" deviceset="JST-ZH-5" device="SMD-RA" value="JST-ZH-5SMD-RA"/>
+<part name="U$4" library="josh" deviceset="GLASSES_HINGE" device=""/>
+<part name="U$5" library="josh" deviceset="GLASSES_HINGE" device=""/>
+<part name="GND80" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND81" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C17" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
+<part name="C18" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
+<part name="C19" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2"/>
+<part name="P+76" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
+<part name="GND82" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11155,6 +11213,14 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <attribute name="NAME" x="8.89" y="217.3986" size="1.778" layer="95"/>
 <attribute name="VALUE" x="8.89" y="212.598" size="1.778" layer="96"/>
 </instance>
+<instance part="U$4" gate="G$1" x="137.16" y="256.54" smashed="yes"/>
+<instance part="U$5" gate="G$1" x="406.4" y="261.62" smashed="yes"/>
+<instance part="GND80" gate="1" x="137.16" y="251.46" smashed="yes">
+<attribute name="VALUE" x="134.62" y="248.92" size="1.778" layer="96"/>
+</instance>
+<instance part="GND81" gate="1" x="406.4" y="256.54" smashed="yes">
+<attribute name="VALUE" x="403.86" y="254" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -11776,6 +11842,20 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <pinref part="C12" gate="G$1" pin="2"/>
 <pinref part="GND73" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="P$1"/>
+<pinref part="U$5" gate="G$1" pin="P$2"/>
+<wire x1="406.4" y1="264.16" x2="406.4" y2="259.08" width="0.1524" layer="91"/>
+<pinref part="GND81" gate="1" pin="GND"/>
+<junction x="406.4" y="259.08"/>
+</segment>
+<segment>
+<pinref part="U$4" gate="G$1" pin="P$2"/>
+<pinref part="GND80" gate="1" pin="GND"/>
+<pinref part="U$4" gate="G$1" pin="P$1"/>
+<wire x1="137.16" y1="259.08" x2="137.16" y2="254" width="0.1524" layer="91"/>
+<junction x="137.16" y="254"/>
+</segment>
 </net>
 <net name="N$6" class="0">
 <segment>
@@ -12280,6 +12360,24 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <attribute name="NAME" x="107.95" y="89.535" size="1.778" layer="95"/>
 <attribute name="VALUE" x="107.95" y="71.12" size="1.778" layer="96"/>
 </instance>
+<instance part="C17" gate="G$1" x="127" y="48.26" smashed="yes">
+<attribute name="NAME" x="128.524" y="48.641" size="1.778" layer="95"/>
+<attribute name="VALUE" x="128.524" y="43.561" size="1.778" layer="96"/>
+</instance>
+<instance part="C18" gate="G$1" x="137.16" y="48.26" smashed="yes">
+<attribute name="NAME" x="138.684" y="48.641" size="1.778" layer="95"/>
+<attribute name="VALUE" x="138.684" y="43.561" size="1.778" layer="96"/>
+</instance>
+<instance part="C19" gate="G$1" x="147.32" y="48.26" smashed="yes">
+<attribute name="NAME" x="148.844" y="48.641" size="1.778" layer="95"/>
+<attribute name="VALUE" x="148.844" y="43.561" size="1.778" layer="96"/>
+</instance>
+<instance part="P+76" gate="1" x="137.16" y="53.34" smashed="yes">
+<attribute name="VALUE" x="134.62" y="48.26" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="GND82" gate="1" x="137.16" y="40.64" smashed="yes">
+<attribute name="VALUE" x="134.62" y="38.1" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -12319,6 +12417,15 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <pinref part="P+37" gate="1" pin="+5V"/>
 <wire x1="104.14" y1="86.36" x2="111.76" y2="86.36" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="G$1" pin="1"/>
+</segment>
+<segment>
+<pinref part="C17" gate="G$1" pin="1"/>
+<pinref part="C19" gate="G$1" pin="1"/>
+<wire x1="127" y1="50.8" x2="137.16" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="C18" gate="G$1" pin="1"/>
+<wire x1="137.16" y1="50.8" x2="147.32" y2="50.8" width="0.1524" layer="91"/>
+<junction x="137.16" y="50.8"/>
+<pinref part="P+76" gate="1" pin="+5V"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -12360,6 +12467,15 @@ This is the "KIT" version, which has limited top masking for improved ease of as
 <pinref part="GND37" gate="1" pin="GND"/>
 <wire x1="104.14" y1="76.2" x2="111.76" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="G$1" pin="5"/>
+</segment>
+<segment>
+<pinref part="C17" gate="G$1" pin="2"/>
+<pinref part="C19" gate="G$1" pin="2"/>
+<wire x1="127" y1="43.18" x2="137.16" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="C18" gate="G$1" pin="2"/>
+<wire x1="137.16" y1="43.18" x2="147.32" y2="43.18" width="0.1524" layer="91"/>
+<junction x="137.16" y="43.18"/>
+<pinref part="GND82" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$62" class="0">
