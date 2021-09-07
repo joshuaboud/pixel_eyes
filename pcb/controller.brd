@@ -3,10 +3,10 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="2.5" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="0.625" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
@@ -174,6 +174,8 @@ Emote
 Remote</text>
 <text x="1.875" y="0.625" size="0.6096" layer="25" rot="R90">J2</text>
 <text x="17.5" y="30" size="1.27" layer="26" font="vector" rot="MR0" align="bottom-center">github.com/joshuaboud/pixel_eyes</text>
+<text x="3.75" y="1.25" size="0.8128" layer="25" font="vector">JLCJLCJLCJLC</text>
+<text x="17.5" y="15.625" size="0.8128" layer="26" font="vector" rot="MR0" align="bottom-center">2021</text>
 </plain>
 <libraries>
 <library name="SparkFun-Connectors">
