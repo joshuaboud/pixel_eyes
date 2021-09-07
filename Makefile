@@ -1,14 +1,13 @@
 TARGET = dist/pixel_eyes
 SIM_TARGET = dist/simulate
 
-F_CPU = 16000000UL
+F_CPU = 1000000UL
 DEVICE = atmega32u4
-PROGRAMMER = avrisp2
 
 CC = avr-gcc
 OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
-AVRDUDE = avrdude -c $(PROGRAMMER) -p $(DEVICE)
+PROGRAMMER = dfu-programmer $(DEVICE)
 SIZE = avr-size --format=avr --mcu=$(DEVICE)
 
 CFLAGS = -g2 -I/usr/avr/include -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) -std=gnu11
@@ -28,7 +27,7 @@ SIM_OBJECT_FILES := $(patsubst simulate/%.c, build/simulate/%.o, $(SIM_OBJECT_FI
 all: $(TARGET).hex
 
 test:
-	$(AVRDUDE) -v
+	$(PROGRAMMER) get ID1
 
 build/simulate/%.o: simulate/%.c
 	@mkdir -p $(dir $@)
@@ -48,7 +47,8 @@ $(TARGET).hex: $(TARGET).elf
 	$(OBJDUMP) -d -S $< > $(TARGET).lss
 
 flash: $(TARGET).hex
-	$(AVRDUDE) -U flash:w:$(TARGET).hex:i
+	$(PROGRAMMER) erase --debug 5
+	$(PROGRAMMER) flash --debug 5 $(TARGET).hex --suppress-bootloader-mem
 
 clean:
 	rm -rf dist/ build/
