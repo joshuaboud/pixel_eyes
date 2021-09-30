@@ -47,8 +47,11 @@ $(TARGET).hex: $(TARGET).elf
 	$(OBJDUMP) -d -S $< > $(TARGET).lss
 
 flash: $(TARGET).hex
-	$(PROGRAMMER) erase --debug 5
+	$(PROGRAMMER) erase --debug 5 --force
 	$(PROGRAMMER) flash --debug 5 $(TARGET).hex --suppress-bootloader-mem
+
+run:
+	$(PROGRAMMER) reset
 
 clean:
 	rm -rf dist/ build/
