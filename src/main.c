@@ -15,7 +15,7 @@
 #include <string.h>
 
 void setup(void) {
-    // set up ports
+    DDRB = 1<<7;
 }
 
 void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const buff_ptr) {
@@ -112,15 +112,19 @@ void state_machine() {
     while (1) {
         draw_frame(&fptr, next_emote, buffer);
         display_frame(buffer);
-        check_input(&next_emote);
+        //check_input(&next_emote);
     }
 }
 
+void test() {
+    struct cRGB buff[] = {{255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}};
+    ws2812_setleds(buff, 8);
+    while(1) {}
+}
+
 int main(void) {
-#ifdef SIMULATE
-    setup_input();
-#endif
     setup();
+    test();
     state_machine();
     return 0;
 }
