@@ -1,7 +1,7 @@
 TARGET = dist/pixel_eyes
 SIM_TARGET = dist/simulate
 
-F_CPU = 1000000UL
+F_CPU = 8000000UL
 DEVICE = atmega32u4
 
 CC = avr-gcc
@@ -14,7 +14,8 @@ CFLAGS = -g2 -I/usr/avr/include -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) -std=gnu11
 CFLAGS += -Os -ffunction-sections -fdata-sections -fpack-struct -fno-move-loop-invariants -fno-tree-scev-cprop -fno-inline-small-functions  
 CFLAGS += -Wall -Wno-pointer-to-int-cast
 
-LDFLAGS = -mmcu=$(DEVICE) -Wl,--relax,--section-start=.text=0,-Map=main.map
+# LDFLAGS = -mmcu=$(DEVICE) -Wl,--relax,--section-start=.text=0,-Map=main.map
+LDFLAGS = -Wl,-gc-sections -Wl,-relax -Wl,-Map=$(TARGET).map
 
 SOURCE_FILES := $(shell find src/ -name *.c)
 OBJECT_FILES := $(patsubst src/%.c, build/%.o, $(SOURCE_FILES))
@@ -39,10 +40,10 @@ build/%.o: src/%.c
 
 $(TARGET).elf: $(OBJECT_FILES)
 	@mkdir -p $(dir $@)
-	$(CC) $(OBJECT_FILES) -Wall $(LIBS) -o $@
+	$(CC) $(CFLAGS) $(OBJECT_FILES) -Wall -o $@ $(LDFLAGS)
 
 $(TARGET).hex: $(TARGET).elf
-	$(OBJCOPY) -j .text -j .data -O ihex $< $@
+	$(OBJCOPY) -R .eeprom -R .fuse -R .lock -R .signature -R .bootloader -O ihex $< $@
 	$(SIZE) $<
 	$(OBJDUMP) -d -S $< > $(TARGET).lss
 
