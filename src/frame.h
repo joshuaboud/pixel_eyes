@@ -10,7 +10,7 @@
 #define FRAME_H 6
 #define FRAME_PIXELS (FRAME_W * FRAME_H)
 
-#define RGB6_2_cRGB(x) {x.g << 6, x.r << 6, x.b << 6}
+#define RGB6_2_cRGB(x) {x.g << 3, x.b << 3, x.r << 3}
 
 enum FrameType { COPY, MIRROR, LEFT, RIGHT };
 
