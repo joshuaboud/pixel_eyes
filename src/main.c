@@ -13,9 +13,13 @@
 
 #include <stddef.h>
 #include <string.h>
+#include <util/delay.h>
 
 void setup(void) {
-    DDRB = 1<<7;
+	CLKPR = 1<<CLKPCE; // enable changing clock prescaler
+	CLKPR = 0x1; // DIV2 resulting in 8MHz F_CPU
+
+    DDRB |= (1<<DDB7);
 }
 
 void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const buff_ptr) {
@@ -110,21 +114,15 @@ void state_machine() {
     next_emote = fptr;
 
     while (1) {
+        //check_input(&next_emote);
         draw_frame(&fptr, next_emote, buffer);
         display_frame(buffer);
-        //check_input(&next_emote);
+		_delay_us(66666);
     }
-}
-
-void test() {
-    struct cRGB buff[] = {{255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}, {255,255,255}};
-    ws2812_setleds(buff, 8);
-    while(1) {}
 }
 
 int main(void) {
     setup();
-    test();
     state_machine();
     return 0;
 }
