@@ -15,11 +15,18 @@
 #include <string.h>
 #include <util/delay.h>
 
+uint8_t shift_byte(void);
+
 void setup(void) {
 	CLKPR = 1<<CLKPCE; // enable changing clock prescaler
 	CLKPR = 0x1; // DIV2 resulting in 8MHz F_CPU
 
     DDRB |= (1<<DDB7);
+
+    SHIFT_DDR = (1 << SHIFT_LATCH) | (1 << SHIFT_CLOCK);
+    SHIFT_PORT |= (1 << SHIFT_LATCH); // keep /latch high
+    SHIFT_PORT &= ~(1 << SHIFT_CLOCK) & ~(1 << SHIFT_DATA); // start clock low and disable pullup
+    shift_byte();
 }
 
 void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const buff_ptr) {
@@ -87,18 +94,63 @@ void display_frame(struct cRGB *buff) {
     ws2812_setleds(buff, BUFF_SZ);
 }
 
+uint8_t shift_byte(void) {
+    uint8_t result = 0;
+
+    // latch
+    SHIFT_PORT &= ~(1 << SHIFT_LATCH);
+    _delay_us(5);
+    SHIFT_PORT |= (1 << SHIFT_LATCH);
+    _delay_us(5);
+
+    // start shifting
+    uint8_t i, test;
+    for (i = 8; i--; i) {
+        SHIFT_PORT |= (1 << SHIFT_CLOCK);
+        _delay_us(5);
+        result = result << 1;
+        test = SHIFT_PIN & (1 << SHIFT_DATA);
+        if (test != 0)
+            result |= 1;
+        SHIFT_PORT &= ~(1 << SHIFT_CLOCK);
+        _delay_us(5);
+    }
+
+    return result;
+}
+
 void check_input(const Frame **next_frame) {
 #ifdef SIMULATE
     simulate_input(next_frame);
 #else
-    for (uint8_t scan = 0; scan < INPUT_MATRIX_ROWS; scan++) {
-        SCAN_PORT = ~(1 << scan); // pull down row
-        for (uint8_t test = 0; test < INPUT_MATRIX_COLS; test++) {
-            if ((INPUT_PORT & (1 << test)) == 0) { // if tested pin is low, must be pressed
-                *next_frame = frame_lut[(scan + 1) * (test + 1)];
-                return;
-            }
-        }
+    uint8_t buttons_pressed = shift_byte();
+    switch (buttons_pressed) {
+        case 1 << BLINK:
+            next_frame = frame_lut[BLINK];
+            break;
+        case 1 << WINK:
+            next_frame = frame_lut[WINK];
+            break;
+        case 1 << ANGRY:
+            next_frame = frame_lut[ANGRY];
+            break;
+        case 1 << SAD:
+            next_frame = frame_lut[SAD];
+            break;
+        case 1 << LOVE:
+            next_frame = frame_lut[LOVE];
+            break;
+        case 1 << RAINBOW:
+            next_frame = frame_lut[RAINBOW];
+            break;
+        case 1 << EYEROLL:
+            next_frame = frame_lut[WINK];
+            break;
+        case 1 << CASH:
+            next_frame = frame_lut[CASH];
+            break;
+        default:
+            break;
     }
 #endif
 }
@@ -115,6 +167,19 @@ void state_machine() {
 
     while (1) {
         //check_input(&next_emote);
+        // memset(buffer, 0, sizeof(struct cRGB) * BUFF_SZ);
+        // uint8_t press = shift_byte();
+        // struct cRGB pressed = {20,20,20};
+        // struct cRGB not_pressed = {0,0,0};
+        // for (uint8_t i = 0; i < 8; i++) {
+        //     uint8_t test = (1 << i);
+        //     uint8_t res = press & test;
+        //     if ((press & test) != 0) {
+        //         buffer[i].r = 20;
+        //         buffer[i].g = 20;
+        //         buffer[i].b = 20;
+        //     }
+        // }
         draw_frame(&fptr, next_emote, buffer);
         display_frame(buffer);
 		_delay_us(66666);
