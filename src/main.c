@@ -67,6 +67,7 @@ void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const 
 	else if (last_next_emote != next_emote) {
 		*fptr = next_emote;
 		last_next_emote = next_emote;
+		duration_counter = 0;
 	}
 
     FrameInfo info = (*fptr)->info;
