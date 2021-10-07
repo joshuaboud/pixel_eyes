@@ -263,7 +263,7 @@ def loop(screen, text):
     running = True
     emotes = load()
     if not emotes:
-        emotes = [[new_frame()] for i in range(9)]
+        emotes = [[new_frame()] for i in range(8)]
     once = True
     while running:
         for event in pygame.event.get():
