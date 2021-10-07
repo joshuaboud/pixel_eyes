@@ -169,15 +169,15 @@ void check_input(const Frame **next_frame) {
         case 1 << LOVE:
             *next_frame = frame_lut[LOVE];
             break;
-        case 1 << RAINBOW:
-            *next_frame = frame_lut[RAINBOW];
             break;
         case 1 << EYEROLL:
             *next_frame = frame_lut[EYEROLL];
             break;
-        case 1 << CASH:
-            *next_frame = frame_lut[CASH];
+        case 1 << RAINBOW:
+            *next_frame = frame_lut[RAINBOW];
             break;
+        case 1 << OFF:
+            *next_frame = frame_lut[OFF];
         default:
             break;
     }

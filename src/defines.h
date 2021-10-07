@@ -28,7 +28,7 @@
  */
 #define BUFF_SZ (FRAME_W * FRAME_H * 2)
 
-enum Emotes {BLINK, WINK, ANGRY, SAD, LOVE, RAINBOW, EYEROLL, CASH, Emotes_length};
+enum Emotes {BLINK, WINK, ANGRY, SAD, LOVE, EYEROLL, RAINBOW, OFF, Emotes_length};
 
 #define SHIFT_PORT        PORTF
 #define SHIFT_DDR         DDRF
