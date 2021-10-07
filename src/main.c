@@ -43,12 +43,15 @@ void setup(void) {
 	CLKPR = 1<<CLKPCE; // enable changing clock prescaler
 	CLKPR = 0x1; // DIV2 resulting in 8MHz F_CPU
 
-    DDRB |= (1<<DDB7);
+	// disable JTAG to use PORTF as IO
+	MCUCR |= 1 << JTD;
+	MCUCR |= 1 << JTD; // twice within 4 clock cycles
+
+    DDRB |= (1 << ws2812_pin); // set output
 
     SHIFT_DDR = (1 << SHIFT_LATCH) | (1 << SHIFT_CLOCK);
     SHIFT_PORT |= (1 << SHIFT_LATCH) | (1 << SHIFT_DATA); // keep /latch high, enable pullup
-    SHIFT_PORT &= ~(1 << SHIFT_CLOCK); // start clock low and disable pullup
-    shift_byte();
+    SHIFT_PORT &= ~(1 << SHIFT_CLOCK); // start clock low
 #endif
 }
 
@@ -58,6 +61,13 @@ void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const 
     struct cRGB *left_out;
     struct cRGB *right_out;
     static uint8_t duration_counter = 0;
+	static const Frame *last_next_emote = NULL;
+	if (!last_next_emote)
+		last_next_emote = next_emote;
+	else if (last_next_emote != next_emote) {
+		*fptr = next_emote;
+		last_next_emote = next_emote;
+	}
 
     FrameInfo info = (*fptr)->info;
 
@@ -122,21 +132,20 @@ uint8_t shift_byte(void) {
 
     // latch
     SHIFT_PORT &= ~(1 << SHIFT_LATCH);
-    _delay_us(5);
+    _delay_us(1);
     SHIFT_PORT |= (1 << SHIFT_LATCH);
-    _delay_us(5);
+    _delay_us(1);
 
     // start shifting
-    uint8_t i, test;
-    for (i = 8; i--; i) {
+    uint8_t i, bit;
+    for (i = 0; i < 8; i++) {
+        bit = (SHIFT_PIN & (1 << SHIFT_DATA)) >> SHIFT_DATA;
+        result <<= 1;
+		result |= bit;
         SHIFT_PORT |= (1 << SHIFT_CLOCK);
-        _delay_us(5);
-        result = result << 1;
-        test = SHIFT_PIN & (1 << SHIFT_DATA);
-        if (test != 0)
-            result |= 1;
+        _delay_us(1);
         SHIFT_PORT &= ~(1 << SHIFT_CLOCK);
-        _delay_us(5);
+        _delay_us(1);
     }
 
     return result;
@@ -149,28 +158,28 @@ void check_input(const Frame **next_frame) {
     uint8_t buttons_pressed = shift_byte();
     switch (buttons_pressed) {
         case 1 << BLINK:
-            next_frame = frame_lut[BLINK];
+            *next_frame = frame_lut[BLINK];
             break;
         case 1 << WINK:
-            next_frame = frame_lut[WINK];
+            *next_frame = frame_lut[WINK];
             break;
         case 1 << ANGRY:
-            next_frame = frame_lut[ANGRY];
+            *next_frame = frame_lut[ANGRY];
             break;
         case 1 << SAD:
-            next_frame = frame_lut[SAD];
+            *next_frame = frame_lut[SAD];
             break;
         case 1 << LOVE:
-            next_frame = frame_lut[LOVE];
+            *next_frame = frame_lut[LOVE];
             break;
         case 1 << RAINBOW:
-            next_frame = frame_lut[RAINBOW];
+            *next_frame = frame_lut[RAINBOW];
             break;
         case 1 << EYEROLL:
-            next_frame = frame_lut[WINK];
+            *next_frame = frame_lut[EYEROLL];
             break;
         case 1 << CASH:
-            next_frame = frame_lut[CASH];
+            *next_frame = frame_lut[CASH];
             break;
         default:
             break;
@@ -189,15 +198,14 @@ void loop() {
     next_emote = fptr;
 
     while (1) {
-        //check_input(&next_emote);
+        check_input(&next_emote);
         // memset(buffer, 0, sizeof(struct cRGB) * BUFF_SZ);
         // uint8_t press = shift_byte();
-        // struct cRGB pressed = {20,20,20};
-        // struct cRGB not_pressed = {0,0,0};
-        // for (uint8_t i = 0; i < 8; i++) {
+		// uint8_t i;
+        // for (i = 0; i < 8; i++) {
         //     uint8_t test = (1 << i);
         //     uint8_t res = press & test;
-        //     if ((press & test) != 0) {
+        //     if ((res) != 0) {
         //         buffer[i].r = 20;
         //         buffer[i].g = 20;
         //         buffer[i].b = 20;
