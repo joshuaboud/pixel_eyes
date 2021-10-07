@@ -13,6 +13,7 @@ from pygame.locals import (
     K_ESCAPE,
     K_DELETE,
     K_d,
+    K_l,
     K_n,
     K_o,
     K_t,
@@ -143,15 +144,14 @@ Help:
 def draw_screen(screen, text, emotes):
     global TYPE_END
     frame = emotes[current_emote][current_frame]["pixels"]
+    info = emotes[current_emote][current_frame]["info"]
     screen.fill(BG)
     for i in range(len(frame)):
         for j in range(len(frame[i])):
             colour = frame[i][j]
             screen.fill((colour[0], colour[1], colour[2]), pygame.Rect(FRAME_LEFT + j*FRAME_SCALE, FRAME_TOP + i*FRAME_SCALE, FRAME_SCALE, FRAME_SCALE))
     textsurface = text.render(
-        f'Emote: {current_emote + 1}/{len(emotes)} Frame: {current_frame + 1}/{len(emotes[current_emote])} (Frame Duration: {emotes[current_emote][current_frame]["info"]["duration"]})',
-        False, (255,255,255)
-    )
+        f'Emote: {current_emote + 1}/{len(emotes)} Frame: {current_frame + 1}/{len(emotes[current_emote])} (Frame Duration: {info["duration"]}) Last Frame: {info["last_frame"]}', False, (255,255,255))
     screen.blit(textsurface, (20, SCREEN_H - 20))
     textsurface = text.render(
         f'Type: {FRAME_TYPES[emotes[current_emote][current_frame]["info"]["type"]]}',
@@ -313,6 +313,8 @@ def loop(screen, text):
                     emotes[current_emote][current_frame]["info"]["duration"] = dur
                 elif event.key == K_SPACE:
                     preview(screen, emotes[current_emote])
+                elif event.key == K_l:
+                    emotes[current_emote][current_frame]["info"]["last_frame"] = int(not emotes[current_emote][current_frame]["info"]["last_frame"])
         pos = pygame.mouse.get_pos()
         pressed1, pressed2, pressed3 = pygame.mouse.get_pressed()
         if pressed1:
