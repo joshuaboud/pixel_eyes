@@ -18,15 +18,17 @@
 uint8_t shift_byte(void);
 
 void setup(void) {
+#ifndef SIMULATE
 	CLKPR = 1<<CLKPCE; // enable changing clock prescaler
 	CLKPR = 0x1; // DIV2 resulting in 8MHz F_CPU
 
     DDRB |= (1<<DDB7);
 
     SHIFT_DDR = (1 << SHIFT_LATCH) | (1 << SHIFT_CLOCK);
-    SHIFT_PORT |= (1 << SHIFT_LATCH); // keep /latch high
-    SHIFT_PORT &= ~(1 << SHIFT_CLOCK) & ~(1 << SHIFT_DATA); // start clock low and disable pullup
+    SHIFT_PORT |= (1 << SHIFT_LATCH) | (1 << SHIFT_DATA); // keep /latch high, enable pullup
+    SHIFT_PORT &= ~(1 << SHIFT_CLOCK); // start clock low and disable pullup
     shift_byte();
+#endif
 }
 
 void draw_frame(const Frame **fptr, const Frame *next_emote, struct cRGB *const buff_ptr) {
@@ -155,7 +157,7 @@ void check_input(const Frame **next_frame) {
 #endif
 }
 
-void state_machine() {
+void loop() {
     const Frame *fptr = NULL;
     const Frame *next_emote = NULL;
     struct cRGB buffer[BUFF_SZ];
@@ -188,6 +190,6 @@ void state_machine() {
 
 int main(void) {
     setup();
-    state_machine();
+    loop();
     return 0;
 }
