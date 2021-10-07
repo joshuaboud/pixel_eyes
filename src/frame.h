@@ -31,12 +31,6 @@
 #define FRAME_PIXELS (FRAME_W * FRAME_H)
 
 /**
- * @brief Convert RGB6 struct to cRGB for the Light_WS2812 library
- * 
- */
-#define RGB6_2_cRGB(x) {x.g << 4, x.b << 4, x.r << 4}
-
-/**
  * @brief How to display the frame across each eye
  * 
  */

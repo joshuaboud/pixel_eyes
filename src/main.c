@@ -36,6 +36,14 @@
 #include <string.h>
 #include <util/delay.h>
 
+uint8_t brightness = 4; ///< Brightness of LEDs
+
+/**
+ * @brief Convert RGB6 struct to cRGB for the Light_WS2812 library
+ * 
+ */
+#define RGB6_2_cRGB(x) {x.g << brightness, x.b << brightness, x.r << brightness}
+
 uint8_t shift_byte(void);
 
 void setup(void) {
@@ -152,6 +160,7 @@ void check_input(const Frame **next_frame) {
 #ifdef SIMULATE
     simulate_input(next_frame);
 #else
+	static uint8_t once = 1;
     uint8_t buttons_pressed = shift_byte();
     switch (buttons_pressed) {
         case 1 << BLINK:
@@ -169,7 +178,6 @@ void check_input(const Frame **next_frame) {
         case 1 << LOVE:
             *next_frame = frame_lut[LOVE];
             break;
-            break;
         case 1 << EYEROLL:
             *next_frame = frame_lut[EYEROLL];
             break;
@@ -178,9 +186,23 @@ void check_input(const Frame **next_frame) {
             break;
         case 1 << OFF:
             *next_frame = frame_lut[OFF];
+			break;
+		case (1 << SAD) | (1 << BLINK):
+			if (brightness < 6 && once) {
+				brightness++;
+				once = 0;
+			}
+			return;
+		case (1 << SAD) | (1 << OFF):
+			if (brightness > 1 && once) {
+				brightness--;
+				once = 0;
+			}
+			return;
         default:
             break;
     }
+	once = 1;
 #endif
 }
 
