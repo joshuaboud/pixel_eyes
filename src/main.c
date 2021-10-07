@@ -133,9 +133,7 @@ uint8_t shift_byte(void) {
 
     // latch
     SHIFT_PORT &= ~(1 << SHIFT_LATCH);
-    _delay_us(1);
     SHIFT_PORT |= (1 << SHIFT_LATCH);
-    _delay_us(1);
 
     // start shifting
     uint8_t i, bit;
@@ -144,9 +142,7 @@ uint8_t shift_byte(void) {
         result <<= 1;
 		result |= bit;
         SHIFT_PORT |= (1 << SHIFT_CLOCK);
-        _delay_us(1);
         SHIFT_PORT &= ~(1 << SHIFT_CLOCK);
-        _delay_us(1);
     }
 
     return result;
